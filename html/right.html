@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>right_basic</title>
+    <link rel="stylesheet" href="../css/right.css" />
+</head>
+<body>
+  <main class="game-wrapper">
+    <section class="game-screen">
+      <img 
+        src="../images/right_basic.png" 
+        class="room-bg"
+      />
+
+      <button class="hotspot shelf" onclick="openShelfModal()" aria-label="선반 조사"></button>
+      <button class="hotspot memo" onclick="openInfoModal('memo')" aria-label="메모 조사"></button>
+      <button class="hotspot poster" onclick="openInfoModal('poster')" aria-label="포스터 조사"></button>
+      <button class="hotspot book" onclick="openInfoModal('book')" aria-label="책 조사"></button>
+      <button class="hotspot paper" onclick="openPaperModal()" aria-label="일지 조사"></button>
+      <button class="hotspot microscope" onclick="openMicroscopeModal()" aria-label="현미경 조사"></button>
+      <button class="hotspot hint" onclick="openHint()" aria-label="힌트 열기">HINT</button>
+      <button class="hotspot screen-back" onclick="goPage('middle')" aria-label="가운데 화면">◀</button>
+    
+      <div class="inventory-bar">
+        <button class="inventory-slot" data-slot="1" aria-label="아이템 슬롯 1"></button>
+        <button class="inventory-slot" data-slot="2" aria-label="아이템 슬롯 2"></button>
+        <button class="inventory-slot" data-slot="3" aria-label="아이템 슬롯 3"></button>
+        <button class="inventory-slot" data-slot="4" aria-label="아이템 슬롯 4"></button>
+        <button class="inventory-slot" data-slot="5" aria-label="아이템 슬롯 5"></button>
+        <button class="inventory-slot" data-slot="6" aria-label="아이템 슬롯 6"></button>
+        <button class="inventory-slot" data-slot="7" aria-label="아이템 슬롯 7"></button>
+        <button class="inventory-slot" data-slot="8" aria-label="아이템 슬롯 8"></button>
+      </div>
+
+      <!-- shelf 모달 -->
+      <!-- 1단계: 기본 선반 모달 -->
+      <div class="investigate-overlay hidden" id="shelfModal1">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+          <button
+            class="modal-hotspot safe-area"
+            onclick="openSafeModalFromStep1()"
+            aria-label="상자 조사"
+          ></button>
+
+          <img src="../images/shelf1.png" class="shelf-modal-image" />
+
+          <button class="modal-hotspot battery-area" onclick="getBattery()"></button>
+          <button class="modal-hotspot safe-area" onclick="openSafeModalFromStep1()"></button>
+
+          <p class="investigate-text">“건전지가 있다. 옆에 저 상자는 뭐지?”</p>
+        </div>
+      </div>
+
+      <!-- 2단계: 건전지 획득 후 모달 -->
+      <div class="investigate-overlay hidden" id="shelfModal2">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img src="../images/shelf2.png" class="shelf-modal-image" />
+
+          <button
+            class="modal-hotspot safe-area"
+            onclick="openSafeModal()"
+            aria-label="상자 조사"
+          ></button>
+
+          <p class="investigate-text">“건전지가 있다. 옆에 저 상자는 뭐지?”</p>
+        </div>
+      </div>
+
+      <!-- 3단계: 2단계에서 들어온 비밀번호 모달 -->
+      <div class="investigate-overlay hidden" id="shelfModal3">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="showModal('shelfModal2')">←</button>
+
+          <img src="../images/shelf2.png" class="shelf-modal-image" />
+
+          <p class="investigate-text">잠겨있다.</p>
+
+          <div class="password-box">
+            <button class="password-display" onclick="focusPasswordInput()">
+              <span class="pw1">_</span>
+              <span class="pw2">_</span>
+              <span class="pw3">_</span>
+              <span class="pw4">_</span>
+            </button>
+
+            <button class="enter-button" onclick="submitPassword()">ENTER</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4단계: 1단계에서 들어온 비밀번호 모달 -->    
+      <div class="investigate-overlay hidden" id="shelfModal4">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="showModal('shelfModal1')">←</button>
+
+          <img src="../images/shelf2.png" class="shelf-modal-image" />
+
+          <p class="investigate-text">잠겨있다.</p>
+
+          <div class="password-box">
+            <button class="password-display" onclick="focusPasswordInput()">
+              <span class="pw1">_</span>
+              <span class="pw2">_</span>
+              <span class="pw3">_</span>
+              <span class="pw4">_</span>
+            </button>
+
+            <button class="enter-button" onclick="submitPassword()">ENTER</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5단계: 상자 열림 -->
+      <div class="investigate-overlay hidden" id="shelfModal5">
+        <div class="shelf-modal">
+
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/shelf3.png"
+            class="shelf-modal-image"
+          />
+
+          <!-- 카드키 획득 영역 -->
+          <button
+            class="modal-hotspot cardkey-area"
+            onclick="getCardKey()"
+            aria-label="카드키 획득"
+          ></button>
+
+          <p class="investigate-text">
+            "...!! 열렸다! 카드키가 들어있다."
+          </p>
+
+        </div>
+      </div>
+
+      <!-- 6단계: 카드키 획득 완료 -->
+      <div class="investigate-overlay hidden" id="shelfModal6">
+        <div class="shelf-modal">
+
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/shelf4.png"
+            class="shelf-modal-image"
+          />
+
+          <p class="investigate-text">
+            "카드키를 획득했다."
+          </p>
+
+        </div>
+      </div>
+
+      <!-- paper 모달 -->
+      <div class="investigate-overlay hidden" id="paperModal">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/paper.png"
+            class="shelf-modal-image"
+            alt="일지 조사 화면"
+          />
+
+          <!-- paper 획득 영역 -->
+          <button
+            class="modal-hotspot paper-area"
+            onclick="getPaper()"
+            aria-label="페이퍼 획득"
+          ></button>
+
+          <p class="investigate-text">
+            "찢어진 연구 일지가 있다."
+          </p>
+        </div>
+      </div>
+
+      <!-- microscope 모달 -->
+      <!-- 1단계 : 기본 현미경 모달 -->
+      <div class="investigate-overlay hidden" id="microscopeModal1">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/microscope.png"
+            class="shelf-modal-image"
+          />
+
+          <p class="investigate-text">
+            "흐릿하게 뭔가 적혀있는 것 같다."
+          </p>
+
+          <button
+            class="scope-use-btn"
+            onclick="useScope()"
+          >
+            스코프 사용하기
+          </button>
+
+        </div>
+      </div>
+
+      <!-- 2단계 : 스코프 있음 -->
+      <div class="investigate-overlay hidden" id="microscopeModal2">
+        <div class="shelf-modal">
+
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/microscope.png"
+            class="shelf-modal-image"
+          />
+          <div class="microscope-code-text">
+            _ _ 9 _
+          </div>
+        </div>
+      </div>
+
+      <!-- 3단계 : 스코프 없음 -->
+      <div class="investigate-overlay hidden" id="microscopeModal3">
+        <div class="shelf-modal">
+
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img
+            src="../images/microscope1.png"
+            class="shelf-modal-image"
+          />
+
+          <p class="investigate-text">
+            "사용 가능한 스코프가 없습니다."
+          </p>
+
+        </div>
+      </div>
+      <!-- 공통 조사 모달-->
+      <div class="investigate-overlay hidden" id="infoModal">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img id="infoModalImage" class="shelf-modal-image" />
+
+          <p class="investigate-text" id="infoModalText"></p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- JS 연결 -->
+  <script src="../js/right.js"></script>
+</body>
+</html>

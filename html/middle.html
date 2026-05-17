@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>middle</title>
+    <link rel="stylesheet" href="../css/middle.css" />
+</head>
+<body>
+  <main class="game-wrapper">
+    <section class="game-screen">
+      <img 
+        src="../images/middle_basic.png" 
+        class="room-bg"
+      />
+
+      <button class="hotspot computer" onclick="openShelfModal()" aria-label="컴퓨터 조사"></button>
+      <button class="hotspot shelf" onclick="openInfoModal('shelf')" aria-label="선반 조사"></button>
+      <button class="hotspot plant" onclick="openInfoModal('plant')" aria-label="식물 조사"></button>
+      <button class="hotspot calender" onclick="openInfoModal('calender')" aria-label="캘린더 조사"></button>
+      <button class="hotspot drawer" onclick="openPaperModal()" aria-label="서랍 조사"></button>
+      <button class="hotspot whiteboard" onclick="openMicroscopeModal()" aria-label="화이트보드 조사"></button>
+      <button class="hotspot hint" onclick="openHint()" aria-label="힌트 열기">HINT</button>
+      <button class="hotspot screen-back" onclick="goPage('left')" aria-label="왼쪽 화면">◀</button>
+      <button class="hotspot screen-front" onclick="goPage('right')" aria-label="오른쪽 화면">▶</button>
+
+      <div class="inventory-bar">
+        <button class="inventory-slot" data-slot="1" aria-label="아이템 슬롯 1"></button>
+        <button class="inventory-slot" data-slot="2" aria-label="아이템 슬롯 2"></button>
+        <button class="inventory-slot" data-slot="3" aria-label="아이템 슬롯 3"></button>
+        <button class="inventory-slot" data-slot="4" aria-label="아이템 슬롯 4"></button>
+        <button class="inventory-slot" data-slot="5" aria-label="아이템 슬롯 5"></button>
+        <button class="inventory-slot" data-slot="6" aria-label="아이템 슬롯 6"></button>
+        <button class="inventory-slot" data-slot="7" aria-label="아이템 슬롯 7"></button>
+        <button class="inventory-slot" data-slot="8" aria-label="아이템 슬롯 8"></button>
+      </div>
+
+
+
+      <!-- 공통 조사 모달-->
+      <div class="investigate-overlay hidden" id="infoModal">
+        <div class="shelf-modal">
+          <button class="modal-back-btn" onclick="closeAllModals()">←</button>
+
+          <img id="infoModalImage" class="shelf-modal-image" />
+
+          <p class="investigate-text" id="infoModalText"></p>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="../js/middle.js"></script>
+</body>
+</html>
