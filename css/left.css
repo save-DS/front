@@ -18,6 +18,7 @@ body {
 .game-wrapper {
   width: 100vw;
   height: 100vh;
+  overflow: auto;
 
   display: flex;
   justify-content: center;
@@ -26,14 +27,11 @@ body {
 
 .game-screen {
   position: relative;
-
-  width: min(100vw, calc(100vh * 16 / 9));
-  height: min(100vh, calc(100vw * 9 / 16));
-
+  width: 100vw;
   aspect-ratio: 16 / 9;
 
-  overflow: hidden;
-  background: #000;
+  min-width: 1000px;
+  min-height: 562px;
 }
 
 .room-bg {
@@ -46,8 +44,6 @@ body {
   object-fit: contain;
   display: block;
 }
-
-
 
 /* ========================= */
 /* 공통 hotspot 설정 */
@@ -63,8 +59,6 @@ body {
 
   cursor: pointer;
 }
-
-
 
 /* ========================= */
 /* 클릭 영역 위치 */
@@ -118,7 +112,6 @@ body {
   height: 24%;
 }
 
-
 .screen-back {
   left: 4%;
   top: 46%;
@@ -127,7 +120,7 @@ body {
   height: 5%;
 
   color: #000000;
-  background:white;
+  background: white;
   font-size: 1rem;
 }
 
@@ -139,11 +132,9 @@ body {
   height: 5%;
 
   color: #000000;
-  background:white;
+  background: white;
   font-size: 1rem;
 }
-
-
 
 /* 공통 모달 */
 .hidden {
@@ -217,11 +208,17 @@ body {
   z-index: 115;
 }
 
+.investigate-text {
+  margin-top: 18px;
 
+  color: white;
+  font-size: clamp(13px, 1.2vw, 22px);
+
+  text-align: center;
+  text-shadow: 0 0 5px black;
+}
 
 /* 개별 모달 */
-
-
 
 /* 고정용 */
 .hint {

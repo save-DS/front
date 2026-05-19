@@ -13,8 +13,6 @@ function goPage(target) {
   window.location.href = `./${target}.html`;
 }
 
-
-
 /* ========================= */
 /* 인벤토리 불러오기 */
 /* ========================= */
@@ -79,8 +77,6 @@ function selectItem(itemId) {
   console.log(`${itemId} 아이템 선택`);
 }
 
-
-
 /* ========================= */
 /* 모달 공통 */
 /* ========================= */
@@ -120,23 +116,17 @@ function closeAllModals() {
   currentPasswordModalId = null;
 }
 
-
-
 /* ========================= */
 /* 공통 조사 모달 */
 /* ========================= */
 const infoModalData = {
-  shelf: {
-    image: "../images/shelf.png",
-    text: "메모가 있다.",
-  },
   plant: {
     image: "../images/plant.png",
-    text: "이상한 포스터다.",
+    text: "죽어가는식물이 있다.",
   },
   calender: {
     image: "../images/calender.png",
-    text: "낡은 책이다.",
+    text: "연구실 주인의 생일 일까..?",
   },
 };
 
@@ -149,7 +139,41 @@ function openInfoModal(type) {
   showModal("infoModal");
 }
 
+/* ========================= */
+/* 선반 조사 모달 */
+/* ========================= */
 
+function openShelfModal() {
+  showModal("shelfModal");
+}
+
+function getscope() {
+  addItemToInventory({
+    id: "scpoe",
+    name: "scpoe",
+    image: "../images/scope.png",
+  });
+
+  closeAllModals();
+}
+
+/* ========================= */
+/* 서랍 조사 모달 */
+/* ========================= */
+
+function openDrawerModal() {
+  showModal("drawerModal1");
+}
+
+function getlight() {
+  addItemToInventory({
+    id: "light",
+    name: "light",
+    image: "../images/light.png",
+  });
+
+  showModal("drawerModal2");
+}
 
 /* ========================= */
 /* 아이템 인벤토리 추가 */
@@ -157,7 +181,7 @@ function openInfoModal(type) {
 
 function addItemToInventory(item) {
   const alreadyHasItem = inventoryItems.some(
-    (inventoryItem) => inventoryItem.id === item.id
+    (inventoryItem) => inventoryItem.id === item.id,
   );
 
   if (alreadyHasItem) {

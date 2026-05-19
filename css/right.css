@@ -18,6 +18,7 @@ body {
 .game-wrapper {
   width: 100vw;
   height: 100vh;
+  overflow: auto;
 
   display: flex;
   justify-content: center;
@@ -26,14 +27,11 @@ body {
 
 .game-screen {
   position: relative;
-
-  width: min(100vw, calc(100vh * 16 / 9));
-  height: min(100vh, calc(100vw * 9 / 16));
-
+  width: 100vw;
   aspect-ratio: 16 / 9;
 
-  overflow: hidden;
-  background: #000;
+  min-width: 1000px;
+  min-height: 562px;
 }
 
 .room-bg {
@@ -46,8 +44,6 @@ body {
   object-fit: contain;
   display: block;
 }
-
-
 
 /* ========================= */
 /* 공통 hotspot 설정 */
@@ -63,8 +59,6 @@ body {
 
   cursor: pointer;
 }
-
-
 
 /* ========================= */
 /* 클릭 영역 위치 */
@@ -118,7 +112,6 @@ body {
   height: 24%;
 }
 
-
 .screen-back {
   left: 4%;
   top: 46%;
@@ -127,11 +120,9 @@ body {
   height: 5%;
 
   color: #000000;
-  background:white;
+  background: white;
   font-size: 1rem;
 }
-
-
 
 /* 공통 모달 */
 
@@ -169,21 +160,21 @@ body {
   z-index: 20;
 }
 
+.modal-image-frame {
+  position: relative;
+  display: inline-block;
+}
+
 .shelf-modal-image {
-  width: 100%;
-  height: auto;
-
-  object-fit: contain;
   display: block;
-
-  border: 4px solid rgba(255, 220, 230, 0.95);
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .modal-back-btn {
   position: absolute;
-
-  left: 1.5%;
-  top: 1.5%;
+  top: 10px;
+  left: 10px;
 
   width: 5%;
   aspect-ratio: 1 / 1;
@@ -194,7 +185,6 @@ body {
 
   font-size: clamp(10px, 1vw, 18px);
 
-  cursor: pointer;
   z-index: 120;
 }
 
@@ -204,6 +194,16 @@ body {
   background: transparent;
   cursor: pointer;
   z-index: 115;
+}
+
+.investigate-text {
+  margin-top: 18px;
+
+  color: white;
+  font-size: clamp(13px, 1.2vw, 22px);
+
+  text-align: center;
+  text-shadow: 0 0 5px black;
 }
 
 /* 개별 모달 */
@@ -223,17 +223,6 @@ body {
   width: 36%;
   height: 26%;
 }
-
-.investigate-text {
-  margin-top: 18px;
-
-  color: white;
-  font-size: clamp(13px, 1.2vw, 22px);
-
-  text-align: center;
-  text-shadow: 0 0 5px black;
-}
-
 
 .password-box {
   margin-top: 14px;
@@ -268,8 +257,8 @@ body {
 .enter-button {
   padding: 4px 10px;
 
-  border: 1px solid rgba(255,255,255,0.4);
-  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
 
   color: white;
 
@@ -281,12 +270,10 @@ body {
 }
 
 .enter-button:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .cardkey-area {
-  position: absolute;
-
   left: 38%;
   top: 62%;
 
@@ -294,11 +281,6 @@ body {
   height: 12%;
 
   z-index: 30;
-
-  border: none;
-  background: transparent;
-
-  cursor: pointer;
 }
 
 .paper-area {
@@ -320,8 +302,8 @@ body {
 
   padding: 8px 14px;
 
-  border: 1px solid rgba(255,255,255,0.4);
-  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
 
   color: white;
 
@@ -333,7 +315,7 @@ body {
 }
 
 .scope-use-btn:hover {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .microscope-code-text {
@@ -352,7 +334,6 @@ body {
   z-index: 40;
   pointer-events: none;
 }
-
 
 /* 고정용 */
 .hint {

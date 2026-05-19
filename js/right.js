@@ -13,8 +13,6 @@ function goPage(target) {
   window.location.href = `./${target}.html`;
 }
 
-
-
 /* ========================= */
 /* 인벤토리 불러오기 */
 /* ========================= */
@@ -79,8 +77,6 @@ function selectItem(itemId) {
   console.log(`${itemId} 아이템 선택`);
 }
 
-
-
 /* ========================= */
 /* 모달 공통 */
 /* ========================= */
@@ -119,8 +115,6 @@ function closeAllModals() {
   isPasswordMode = false;
   currentPasswordModalId = null;
 }
-
-
 
 /* ========================= */
 /* 선반 모달 흐름 */
@@ -200,7 +194,7 @@ function updatePasswordDisplay(modalId) {
 }
 
 /*여기서부터*/
-/*
+
 async function submitPassword() {
   if (!currentPasswordModalId) return;
 
@@ -224,8 +218,8 @@ async function submitPassword() {
   passwordInput = "";
   updatePasswordDisplay(currentPasswordModalId);
 }
-*/
 
+/* 
 async function submitPassword() {
   if (!currentPasswordModalId) return;
 
@@ -270,9 +264,7 @@ async function submitPassword() {
     updatePasswordDisplay(currentPasswordModalId);
   }
 }
-
-
-
+*/
 
 /* ========================= */
 /* 공통 조사 모달 */
@@ -301,8 +293,6 @@ function openInfoModal(type) {
   showModal("infoModal");
 }
 
-
-
 /* ========================= */
 /* 일지 조사 모달 */
 /* ========================= */
@@ -321,8 +311,6 @@ function getPaper() {
   closeAllModals();
 }
 
-
-
 /* ========================= */
 /* 현미경 모달 */
 /* ========================= */
@@ -332,9 +320,7 @@ function openMicroscopeModal() {
 }
 
 function useScope() {
-  const hasScope = inventoryItems.some(
-    (item) => item.id === "scope"
-  );
+  const hasScope = inventoryItems.some((item) => item.id === "scope");
 
   // 스코프 있음
   if (hasScope) {
@@ -366,15 +352,13 @@ async function useScope() {
 }
 */
 
-
-
 /* ========================= */
 /* 아이템 인벤토리 추가 */
 /* ========================= */
 
 function addItemToInventory(item) {
   const alreadyHasItem = inventoryItems.some(
-    (inventoryItem) => inventoryItem.id === item.id
+    (inventoryItem) => inventoryItem.id === item.id,
   );
 
   if (alreadyHasItem) {
