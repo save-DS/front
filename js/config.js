@@ -73,7 +73,7 @@ const ITEM_ICONS = {
   uv_flashlight:    "images/UVlight.png",
   escape_key:       "images/cardkey.png",
   microscope_scope: "images/scope.png",
-  code_note:        "images/book.png",
+  code_note:        "images/paper.png",
 };
 
 // 한글 이름 (백엔드가 안 줄 때 폴백용)
