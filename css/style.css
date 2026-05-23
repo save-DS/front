@@ -1,0 +1,584 @@
+/* ===================== 기본 ===================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #e0e0e0;
+  font-family: "Pretendard", "Apple SD Gothic Neo", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#game {
+  position: relative;
+  width: 100vw;
+  max-width: 1280px;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+}
+
+/* ===================== 화면 전환 ===================== */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+}
+.screen.active { display: block; }
+
+/* ===================== 시작/클리어 화면 ===================== */
+.start-box {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  background: radial-gradient(circle at center, #1a1a22 0%, #000 100%);
+}
+.start-box h1 {
+  font-size: 3rem;
+  letter-spacing: 6px;
+  color: #cfd8e8;
+  text-shadow: 0 0 20px rgba(80, 120, 200, 0.4);
+}
+.subtitle { color: #7a8294; font-size: 1rem; letter-spacing: 2px; }
+.big-btn {
+  margin-top: 20px;
+  padding: 14px 48px;
+  font-size: 1.2rem;
+  background: #2a3550;
+  color: #e0e8f5;
+  border: 1px solid #4a5a80;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.big-btn:hover { background: #3a4a70; transform: translateY(-2px); }
+
+/* ===================== 스테이지 (1인칭) ===================== */
+.stage {
+  position: absolute;
+  inset: 0;
+}
+.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 오브젝트 핫스팟 */
+.hotspot {
+  position: absolute;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hotspot:hover {
+  border-color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
+}
+.hotspot .label {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 4px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+.hotspot:hover .label { opacity: 1; }
+/* 아이템 사용 모드일 때 핫스팟 강조 */
+.stage.use-mode .hotspot {
+  border-color: rgba(120, 200, 120, 0.6);
+  background: rgba(120, 200, 120, 0.1);
+  animation: pulse 1.2s infinite;
+}
+@keyframes pulse { 50% { border-color: rgba(120, 200, 120, 1); } }
+
+/* 시점 화살표 */
+.view-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 80px;
+  font-size: 2rem;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 5;
+  transition: background 0.2s;
+}
+.view-arrow:hover { background: rgba(0, 0, 0, 0.75); }
+.view-arrow.left { left: 0; }
+.view-arrow.right { right: 0; }
+.view-arrow.hidden { display: none; }
+
+/* 힌트 버튼 */
+.hint-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  background: rgba(40, 40, 50, 0.85);
+  color: #d8d8e0;
+  border: 1px solid #555;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 6;
+}
+.hint-btn:hover { background: rgba(70, 70, 90, 0.95); }
+.hint-btn:disabled, .hint-btn.used {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.hint-btn:disabled:hover, .hint-btn.used:hover { background: rgba(40, 40, 50, 0.85); }
+
+/* 인벤토리 바 */
+.inventory-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 96px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px 24px;
+  background: rgba(10, 10, 14, 0.85);
+  z-index: 5;
+}
+.inv-slot {
+  width: 60px;
+  height: 60px;
+  border: 1px solid #3a3a44;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+}
+.inv-slot.filled:hover { border-color: #8a9ac0; }
+.inv-slot.selected {
+  border-color: #d8c060;
+  box-shadow: 0 0 14px rgba(216, 192, 96, 0.6);
+}
+.inv-slot img { max-width: 80%; max-height: 80%; object-fit: contain; }
+.inv-slot .item-name {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  white-space: nowrap;
+  color: #aab;
+}
+
+/* ===================== 오버레이 공통 ===================== */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+.overlay.active { display: flex; }
+
+/* 상세 뷰 */
+.detail-box {
+  position: relative;
+  width: 70%;
+  max-width: 620px;
+  background: #15151c;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.back-btn {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.back-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.detail-img {
+  max-width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.detail-img.hidden { display: none; }
+.detail-text {
+  font-size: 1.05rem;
+  text-align: center;
+  line-height: 1.5;
+  min-height: 1.5em;
+}
+.detail-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.detail-actions button {
+  padding: 10px 20px;
+  background: #2a3550;
+  color: #e0e8f5;
+  border: 1px solid #4a5a80;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.detail-actions button:hover { background: #3a4a70; }
+
+/* ===================== 모달 (키패드) ===================== */
+.modal-box {
+  background: #16161e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 24px 28px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.modal-box h3 { color: #cfd8e8; font-weight: 500; }
+.numpad-display {
+  width: 100%;
+  min-height: 44px;
+  background: #0a0a0e;
+  border: 1px solid #333;
+  border-radius: 5px;
+  font-size: 1.6rem;
+  letter-spacing: 8px;
+  text-align: center;
+  line-height: 44px;
+  color: #d8c060;
+}
+.numpad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.numpad-grid button {
+  width: 64px;
+  height: 52px;
+  font-size: 1.2rem;
+  background: #232330;
+  color: #e0e0e8;
+  border: 1px solid #3a3a48;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.numpad-grid button:hover { background: #323242; }
+.numpad-grid button.enter { background: #2a4a3a; }
+.numpad-grid button.wide { font-size: 0.9rem; }
+
+/* QWERTY */
+.keypad-img {
+  max-width: 280px;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+.keypad-grid { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.keypad-row { display: flex; gap: 6px; }
+.keypad-grid button {
+  width: 38px;
+  height: 44px;
+  font-size: 0.95rem;
+  background: #232330;
+  color: #e0e0e8;
+  border: 1px solid #3a3a48;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.keypad-grid button:hover { background: #323242; }
+.keypad-grid button.special { width: auto; padding: 0 12px; font-size: 0.8rem; }
+.keypad-grid button.enter { background: #2a4a3a; }
+
+.modal-msg { font-size: 0.9rem; min-height: 1.2em; color: #d88; }
+.modal-msg.ok { color: #8d8; }
+.modal-close {
+  margin-top: 6px;
+  padding: 8px 24px;
+  background: #2a2a35;
+  color: #ccc;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.modal-close:hover { background: #3a3a48; }
+
+/* ===================== AI 힌트 채팅 ===================== */
+.ai-hint-box { min-width: 460px; max-width: 560px; align-items: stretch; }
+.ai-hint-box h3 { text-align: center; }
+.ai-chat-log {
+  height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: #0e0e14;
+  border: 1px solid #2a2a34;
+  border-radius: 8px;
+}
+.chat-bubble {
+  max-width: 80%;
+  padding: 9px 13px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.chat-bubble.user {
+  align-self: flex-end;
+  background: #2a3550;
+  color: #e8eefb;
+  border-bottom-right-radius: 3px;
+}
+.chat-bubble.ai {
+  align-self: flex-start;
+  background: #23232e;
+  color: #d8d8e0;
+  border-bottom-left-radius: 3px;
+}
+.chat-bubble.ai.error { color: #e08a8a; }
+.ai-input-row { display: flex; gap: 8px; }
+.ai-input-row input {
+  flex: 1;
+  padding: 11px 14px;
+  background: #0e0e14;
+  border: 1px solid #3a3a48;
+  border-radius: 6px;
+  color: #e0e0e8;
+  font-size: 0.95rem;
+}
+.ai-input-row input:focus { outline: none; border-color: #5a6a90; }
+.ai-input-row button {
+  padding: 0 22px;
+  background: #2a3550;
+  color: #e0e8f5;
+  border: 1px solid #4a5a80;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ai-input-row button:hover { background: #3a4a70; }
+
+/* ===================== 미로 ===================== */
+.maze-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: radial-gradient(circle at center, #14141c 0%, #000 100%);
+}
+.maze-wrap {
+  border: 2px solid #333;
+  background: #0a0a0e;
+  padding: 6px;
+  border-radius: 6px;
+}
+#maze-canvas { display: block; image-rendering: pixelated; }
+.maze-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.dpad-mid { display: flex; gap: 48px; }
+.dpad {
+  width: 48px;
+  height: 40px;
+  font-size: 1.1rem;
+  background: #232330;
+  color: #e0e0e8;
+  border: 1px solid #3a3a48;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.dpad:hover { background: #323242; }
+.maze-info {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #aab;
+}
+.small-btn {
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  background: #2a2a35;
+  color: #ccc;
+  border: 1px solid #444;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.small-btn:hover { background: #3a3a48; }
+.maze-msg {
+  min-height: 1.4em;
+  font-size: 1rem;
+  color: #d8c060;
+}
+/* 미로 암기 카운트다운 - 크고 잘 보이게 */
+.maze-countdown {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 36px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #d8c060;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #ffe9a0;
+  text-shadow: 0 0 14px rgba(216, 192, 96, 0.7);
+  white-space: nowrap;
+  z-index: 8;
+  display: none;
+}
+.maze-countdown.show { display: block; animation: cdPulse 1s ease-in-out infinite; }
+@keyframes cdPulse {
+  50% { transform: translateX(-50%) scale(1.06); }
+}
+.maze-stage.trap-flash { animation: trapflash 0.4s; }
+@keyframes trapflash {
+  0%, 100% { background: radial-gradient(circle at center, #14141c 0%, #000 100%); }
+  50% { background: #5a1010; }
+}
+
+/* ===================== 아이템 획득 팝업 ===================== */
+#item-acquired { background: rgba(0, 0, 0, 0.6); z-index: 40; }
+.acquired-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: acquirePop 0.4s ease-out;
+}
+@keyframes acquirePop {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.acquired-label {
+  font-size: 1.1rem;
+  letter-spacing: 4px;
+  color: #d8c060;
+}
+.acquired-img {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 24px rgba(216, 192, 96, 0.5));
+}
+.acquired-name { font-size: 1.4rem; color: #fff; }
+
+/* ===================== 아이템 크게 보기 ===================== */
+.itemview-box {
+  background: #16161e;
+  border: 1px solid #333;
+  border-radius: 10px;
+  padding: 26px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.itemview-img {
+  width: 260px;
+  height: 260px;
+  object-fit: contain;
+}
+.itemview-name { font-size: 1.3rem; color: #e0e8f5; }
+.itemview-actions { display: flex; gap: 10px; }
+.itemview-actions button {
+  padding: 10px 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #4a5a80;
+  background: #2a3550;
+  color: #e0e8f5;
+}
+.itemview-actions button:hover { background: #3a4a70; }
+.itemview-actions .modal-close { background: #2a2a35; border-color: #444; color: #ccc; }
+
+/* ===================== 인트로 연출 ===================== */
+#intro-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  opacity: 1;
+  transition: opacity 2s ease;
+}
+#intro-overlay.fade-out { opacity: 0; }
+#intro-text {
+  max-width: 70%;
+  font-size: 1.4rem;
+  line-height: 1.8;
+  text-align: center;
+  color: #cfd8e8;
+  opacity: 0;
+  animation: introTextIn 2s ease forwards;
+}
+@keyframes introTextIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===================== 토스트 ===================== */
+.toast {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 24px;
+  background: rgba(20, 20, 28, 0.95);
+  border: 1px solid #4a5a80;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  opacity: 0;
+  transition: opacity 0.3s, bottom 0.3s;
+  pointer-events: none;
+  z-index: 30;
+}
+.toast.show { opacity: 1; bottom: 120px; }

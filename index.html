@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>폐연구실 탈출</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="game">
+
+    <!-- ============ 시작 화면 ============ -->
+    <section id="screen-start" class="screen active">
+      <div class="start-box">
+        <h1>폐연구실 탈출</h1>
+        <p class="subtitle">자료구조 기반 웹 방탈출</p>
+        <button id="btn-start" class="big-btn">게임 시작</button>
+      </div>
+    </section>
+
+    <!-- ============ 1인칭 화면 ============ -->
+    <section id="screen-fp" class="screen">
+      <div class="stage" id="fp-stage">
+        <!-- 배경 -->
+        <img id="fp-bg" class="bg" src="" alt="배경" />
+
+        <!-- 오브젝트 핫스팟이 JS로 여기 추가됨 -->
+        <div id="fp-hotspots"></div>
+
+        <!-- 좌우 시점 전환 화살표 -->
+        <button id="fp-arrow-left" class="view-arrow left">◀</button>
+        <button id="fp-arrow-right" class="view-arrow right">▶</button>
+
+        <!-- 우상단 힌트 버튼 -->
+        <button id="fp-hint" class="hint-btn">HINT</button>
+
+        <!-- 하단 인벤토리 바 -->
+        <div id="fp-inventory" class="inventory-bar"></div>
+      </div>
+    </section>
+
+    <!-- ============ 미로 화면 ============ -->
+    <section id="screen-maze" class="screen">
+      <div class="stage maze-stage">
+        <button id="maze-hint" class="hint-btn">HINT</button>
+        <div id="maze-countdown" class="maze-countdown"></div>
+        <div class="maze-wrap">
+          <canvas id="maze-canvas"></canvas>
+        </div>
+        <div class="maze-controls">
+          <button class="dpad up" data-dir="up">▲</button>
+          <div class="dpad-mid">
+            <button class="dpad left" data-dir="left">◀</button>
+            <button class="dpad right" data-dir="right">▶</button>
+          </div>
+          <button class="dpad down" data-dir="down">▼</button>
+        </div>
+        <div class="maze-info">
+          <span id="maze-steps">이동: 0</span>
+          <span id="maze-traps">함정: 0</span>
+          <button id="maze-regen" class="small-btn">미로 새로 생성</button>
+        </div>
+        <div id="maze-msg" class="maze-msg"></div>
+      </div>
+    </section>
+
+    <!-- ============ 클리어 화면 ============ -->
+    <section id="screen-clear" class="screen">
+      <div class="start-box">
+        <h1>탈출 성공!</h1>
+        <p id="clear-stats" class="subtitle"></p>
+        <button id="btn-replay" class="big-btn">다시 하기</button>
+      </div>
+    </section>
+
+    <!-- ============ 상세 뷰 오버레이 ============ -->
+    <div id="detail-overlay" class="overlay">
+      <div class="detail-box">
+        <button id="detail-back" class="back-btn">←</button>
+        <img id="detail-img" class="detail-img" src="" alt="" />
+        <div id="detail-text" class="detail-text"></div>
+        <div id="detail-actions" class="detail-actions"></div>
+      </div>
+    </div>
+
+    <!-- ============ 숫자 키패드 모달 ============ -->
+    <div id="modal-numpad" class="overlay">
+      <div class="modal-box">
+        <h3 id="numpad-title">비밀번호 입력</h3>
+        <div id="numpad-display" class="numpad-display"></div>
+        <div class="numpad-grid">
+          <button data-n="1">1</button><button data-n="2">2</button><button data-n="3">3</button>
+          <button data-n="4">4</button><button data-n="5">5</button><button data-n="6">6</button>
+          <button data-n="7">7</button><button data-n="8">8</button><button data-n="9">9</button>
+          <button data-n="clear" class="wide">지움</button><button data-n="0">0</button><button data-n="enter" class="enter">입력</button>
+        </div>
+        <div id="numpad-msg" class="modal-msg"></div>
+        <button class="modal-close" data-close="modal-numpad">닫기</button>
+      </div>
+    </div>
+
+    <!-- ============ 영문 키패드 모달 (QWERTY) ============ -->
+    <div id="modal-keypad" class="overlay">
+      <div class="modal-box">
+        <h3>키패드 입력</h3>
+        <img src="images/keypad_pass.png" class="keypad-img" alt="키패드" />
+        <div id="keypad-display" class="numpad-display"></div>
+        <div id="keypad-grid" class="keypad-grid"></div>
+        <div id="keypad-msg" class="modal-msg"></div>
+        <button class="modal-close" data-close="modal-keypad">닫기</button>
+      </div>
+    </div>
+
+    <!-- ============ AI 힌트 채팅 패널 (1인칭 HINT) ============ -->
+    <div id="ai-hint-panel" class="overlay">
+      <div class="modal-box ai-hint-box">
+        <h3>🤖 AI 힌트</h3>
+        <div id="ai-chat-log" class="ai-chat-log"></div>
+        <div class="ai-input-row">
+          <input id="ai-question" type="text" placeholder="예: 지금 뭘 해야 해?" autocomplete="off" />
+          <button id="ai-send">전송</button>
+        </div>
+        <button class="modal-close" data-close="ai-hint-panel">닫기</button>
+      </div>
+    </div>
+
+    <!-- ============ 아이템 획득 팝업 (자동 닫힘) ============ -->
+    <div id="item-acquired" class="overlay">
+      <div class="acquired-box">
+        <div class="acquired-label">획득!</div>
+        <img id="acquired-img" class="acquired-img" src="" alt="" />
+        <div id="acquired-name" class="acquired-name"></div>
+      </div>
+    </div>
+
+    <!-- ============ 아이템 크게 보기 (인벤토리 클릭) ============ -->
+    <div id="item-view" class="overlay">
+      <div class="itemview-box">
+        <img id="itemview-img" class="itemview-img" src="" alt="" />
+        <div id="itemview-name" class="itemview-name"></div>
+        <div class="itemview-actions">
+          <button id="itemview-use">사용하기</button>
+          <button class="modal-close" data-close="item-view">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ 인트로 연출 (검은 화면 → 페이드인) ============ -->
+    <div id="intro-overlay">
+      <p id="intro-text"></p>
+    </div>
+
+    <!-- ============ 토스트 알림 ============ -->
+    <div id="toast" class="toast"></div>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/firstperson.js"></script>
+  <script src="js/maze.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
