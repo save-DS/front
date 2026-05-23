@@ -64,6 +64,7 @@ const OBJECT_DETAIL_IMAGES = {
   shelf_book:      { default: "images/shelf5.png" },
   bookshelf_right: { default: "images/book.png" },
   bookshelf_clock: { default: "images/watch.png" },
+  escape_door:     { default: "images/keypad.png" },
 };
 
 // 인벤토리 아이템 아이콘
