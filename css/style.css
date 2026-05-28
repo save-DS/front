@@ -77,39 +77,9 @@ body {
 /* 오브젝트 핫스팟 */
 .hotspot {
   position: absolute;
-  border: 2px solid transparent;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.15s;
 }
-.hotspot:hover {
-  border-color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 16px rgba(255, 255, 255, 0.3);
-}
-.hotspot .label {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 4px;
-  padding: 2px 8px;
-  font-size: 0.75rem;
-  white-space: nowrap;
-  background: rgba(0, 0, 0, 0.8);
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.15s;
-  pointer-events: none;
-}
-.hotspot:hover .label { opacity: 1; }
-/* 아이템 사용 모드일 때 핫스팟 강조 */
-.stage.use-mode .hotspot {
-  border-color: rgba(120, 200, 120, 0.6);
-  background: rgba(120, 200, 120, 0.1);
-  animation: pulse 1.2s infinite;
-}
-@keyframes pulse { 50% { border-color: rgba(120, 200, 120, 1); } }
+/* 영역 표시 없음 — 호버/아이템 사용 모드 모두 시각 단서 X (픽셀 헌트) */
 
 /* 시점 화살표 */
 .view-arrow {
@@ -211,8 +181,8 @@ body {
 /* 상세 뷰 */
 .detail-box {
   position: relative;
-  width: 70%;
-  max-width: 620px;
+  width: 85%;
+  max-width: 900px;
   background: #15151c;
   border: 1px solid #333;
   border-radius: 10px;
@@ -236,13 +206,27 @@ body {
   cursor: pointer;
 }
 .back-btn:hover { background: rgba(255, 255, 255, 0.18); }
+.detail-img-wrap {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
 .detail-img {
   max-width: 100%;
-  max-height: 320px;
+  max-height: 520px;
   object-fit: contain;
   border-radius: 6px;
 }
 .detail-img.hidden { display: none; }
+#detail-img-hotspots {
+  position: absolute;
+  inset: 0;
+}
+/* 팝업 안 핫스팟 — 평소엔 안 보임 (영역 표시 없음) */
+.detail-hotspot {
+  position: absolute;
+  cursor: pointer;
+}
 .detail-text {
   font-size: 1.05rem;
   text-align: center;
@@ -542,7 +526,7 @@ body {
 #intro-overlay {
   position: absolute;
   inset: 0;
-  background: #000;
+  background: #000 url("../images/Background.png") center/cover no-repeat;
   display: none;
   justify-content: center;
   align-items: center;

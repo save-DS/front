@@ -53,8 +53,8 @@ const OBJECT_DETAIL_IMAGES = {
   computer:        { default: "images/computer1.png", solved: "images/computer2.png" },
   desk_drawer:     { default: "images/drawer1.png",   opened: "images/drawer2.png" },
   calendar:        { default: "images/calender.png" },
-  microscope:      { default: "images/microscope.png" },
-  whiteboard:      { default: "images/whiteboard.png" },
+  microscope:      { default: "images/microscope.png", revealed: "images/microscope2.png" },
+  whiteboard:      { default: "images/whiteboard.png", revealed: "images/whiteBoard_Hint.png" },
   uv_poster:       { default: "images/poster.png" },
   newspaper_pile:  { default: "images/papers.png" },
   memo_wall:       { default: "images/memo2.png" },
@@ -75,6 +75,30 @@ const ITEM_ICONS = {
   escape_key:       "images/cardkey.png",
   microscope_scope: "images/scope.png",
   code_note:        "images/paper.png",
+};
+
+// 상세 팝업 안의 클릭 가능 영역 (이미지 파일명을 키로)
+//  - type: "item" → 클릭 시 /api/object/take로 아이템 획득
+//  - type: "puzzle" → 클릭 시 비밀번호 입력 모달 열림
+// 좌표는 이미지 기준 % (위치 어색하면 숫자만 조정)
+const DETAIL_HOTSPOTS = {
+  // 책상 서랍: 손전등 누르면 획득
+  "images/drawer1.png": [
+    { type: "item", id: "flashlight", left: 18, top: 38, width: 64, height: 22 },
+  ],
+  // 캐비닛 (처음): 잠긴 상자 + 건전지
+  "images/shelf1.png": [
+    { type: "puzzle", id: "cabinet_password", left: 22, top: 25, width: 50, height: 55 },
+    { type: "item",   id: "battery",          left: 20, top: 72, width: 60, height: 22 },
+  ],
+  // 캐비닛 (건전지 가져간 후): 잠긴 상자만
+  "images/shelf2.png": [
+    { type: "puzzle", id: "cabinet_password", left: 22, top: 25, width: 50, height: 55 },
+  ],
+  // 책장 (왼쪽 책): 책 사이의 스코프
+  "images/shelf5.png": [
+    { type: "item", id: "microscope_scope", left: 32, top: 35, width: 38, height: 32 },
+  ],
 };
 
 // 한글 이름 (백엔드가 안 줄 때 폴백용)

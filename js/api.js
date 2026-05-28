@@ -48,6 +48,10 @@ const API = {
   investigate: (object_id) =>
     request("/api/investigate", { method: "POST", body: { object_id } }),
 
+  // ---- 오브젝트 안의 아이템 직접 꺼내기 (상세 팝업 핫스팟용) ----
+  takeItem: (object_id, item_id) =>
+    request("/api/object/take", { method: "POST", body: { object_id, item_id } }),
+
   // ---- 인벤토리 ----
   getInventory: () => request("/api/inventory"),
   useItem: (item_id, target_id) =>

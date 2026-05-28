@@ -5,16 +5,6 @@
  * 전역 객체 FP로 노출.
  */
 
-// 핫스팟에 표시할 한글 라벨
-const OBJ_LABELS = {
-  whiteboard: "화이트보드", computer: "컴퓨터", calendar: "달력",
-  desk_drawer: "책상 서랍", shelf_book: "책장",
-  cabinet: "캐비닛", uv_poster: "포스터", microscope: "현미경",
-  bookshelf_right: "책장", code_note: "노트", photo: "사진",
-  escape_door: "탈출문", bookshelf_clock: "책장",
-  newspaper_pile: "서류 더미", rug: "러그", memo_wall: "메모",
-};
-
 // 퍼즐 종류 (프론트가 어떤 모달을 띄울지 결정)
 const PUZZLE_TYPES = {
   cabinet_password:   { type: "number", title: "잠긴 상자" },
@@ -55,7 +45,6 @@ const FP = {
       div.style.top = pos.top + "%";
       div.style.width = pos.width + "%";
       div.style.height = pos.height + "%";
-      div.innerHTML = `<span class="label">${OBJ_LABELS[objId] || objId}</span>`;
       div.onclick = () => this.onHotspotClick(objId);
       container.appendChild(div);
     }
@@ -101,31 +90,64 @@ const FP = {
   showObjectDetail(obj, text, ctx = {}) {
     this.currentDetailObj = obj;   // 잠긴 상자 해제 시 캐비닛 이미지 갱신에 사용
     const image = this.pickImage(obj, ctx);
-    UI.openDetail({ image, text, actions: this.buildActions(obj, ctx) });
+    UI.openDetail({
+      image,
+      text,
+      actions: this.buildActions(obj, ctx),
+      hotspots: this.buildDetailHotspots(image, obj),
+    });
+  },
+
+  // 상세 팝업 안 핫스팟을 onClick까지 묶어 반환
+  buildDetailHotspots(image, obj) {
+    const raw = (typeof DETAIL_HOTSPOTS !== "undefined" && DETAIL_HOTSPOTS[image]) || [];
+    return raw.map((h) => ({
+      ...h,
+      onClick: () => this.onDetailHotspotClick(h, obj),
+    }));
+  },
+
+  // 팝업 핫스팟 클릭 → 아이템 획득 또는 퍼즐 열기
+  async onDetailHotspotClick(h, obj) {
+    if (h.type === "puzzle") {
+      this.openPuzzle(h.id);
+      return;
+    }
+    if (h.type === "item") {
+      const res = await API.takeItem(obj.id, h.id);
+      if (!res.success) { UI.toast(res.message); return; }
+      Store.merge(res.state_changed);
+      this.refreshInventory();
+      UI.showItemAcquired(h.id);
+      // 이미지/핫스팟 갱신 (예: 캐비닛 shelf1 → shelf2)
+      const newImage = this.pickImage(obj, {});
+      const newHotspots = this.buildDetailHotspots(newImage, obj);
+      UI.setDetailImage(newImage, newHotspots);
+    }
   },
 
   // 오브젝트 + 진행 상황에 맞는 상세 이미지 선택
   pickImage(obj, ctx = {}) {
     const solvedList = Store.get("solved_puzzles") || [];
     const solved = obj.puzzle && solvedList.includes(obj.puzzle);
+    // 이 오브젝트에서 뭔가 꺼냈는지 (셋 자료구조)
+    const takenFromList = Store.get("taken_from_objects") || [];
+    const tookFromHere = takenFromList.includes(obj.id);
 
-    // 캐비닛: shelf1(첫 조사·건전지) → shelf2(재조사) → shelf3(방금 해제) → shelf4(이후)
+    // 캐비닛: shelf1(건전지 안 꺼냄) → shelf2(꺼냄) → shelf3(방금 해제) → shelf4(이후)
     if (obj.id === "cabinet") {
       if (ctx.justSolved) return "images/shelf3.png";
       if (solved) return "images/shelf4.png";
-      if (ctx.wasInvestigated) return "images/shelf2.png";
+      if (tookFromHere) return "images/shelf2.png";
       return "images/shelf1.png";
     }
 
     const map = OBJECT_DETAIL_IMAGES[obj.id];
     if (!map) return null;
-    // 아이템 사용으로 단서를 이미 해독한 경우 → revealed 이미지 (예: 화이트보드 UV)
-    if (map.revealed && obj.gives_clue_on_use) {
-      const foundClues = Store.get("found_clues") || [];
-      if (foundClues.includes(obj.gives_clue_on_use)) return map.revealed;
-    }
+    // revealed는 useOnObject(아이템 사용)에서만 보여줌 — 그냥 조사로는 노출 안 함
     if (map.solved && solved) return map.solved;
-    if (map.opened && ctx.wasInvestigated) return map.opened;
+    // opened는 아이템을 꺼낸 뒤 표시 (예: 책상 서랍 drawer1 → drawer2)
+    if (map.opened && tookFromHere) return map.opened;
     return map.default || null;
   },
 
@@ -134,23 +156,19 @@ const FP = {
     const solved = Store.get("solved_puzzles") || [];
 
     // 아이템 사용은 "인벤토리에서 아이템 선택 → 배경 핫스팟 클릭"으로만 처리.
-    // 따라서 상세 뷰에는 비밀번호 입력형 퍼즐 버튼만 남긴다.
-    // (탈출문 키패드는 탈출키를 사용해야 열리므로 버튼 없음)
-    if (obj.puzzle && !solved.includes(obj.puzzle) && obj.id !== "escape_door") {
-      if (obj.id === "cabinet") {
-        // 캐비닛은 첫 조사(건전지 획득) 다음부터 잠긴 상자 열기 가능
-        if (ctx.wasInvestigated) {
-          actions.push({
-            label: "잠긴 상자 열기",
-            onClick: () => this.openPuzzle(obj.puzzle),
-          });
-        }
-      } else {
-        actions.push({
-          label: "비밀번호 입력",
-          onClick: () => this.openPuzzle(obj.puzzle),
-        });
-      }
+    // 비밀번호형 퍼즐(컴퓨터)만 상세 뷰에 버튼.
+    // 캐비닛은 상세 팝업 안의 잠긴 상자 핫스팟으로 진입 (DETAIL_HOTSPOTS).
+    // 탈출문 키패드는 탈출키 사용 시 모달 자동 오픈.
+    if (
+      obj.puzzle &&
+      !solved.includes(obj.puzzle) &&
+      obj.id !== "escape_door" &&
+      obj.id !== "cabinet"
+    ) {
+      actions.push({
+        label: "비밀번호 입력",
+        onClick: () => this.openPuzzle(obj.puzzle),
+      });
     }
 
     return actions;
@@ -240,13 +258,23 @@ const FP = {
 
     setTimeout(() => {
       UI.closeModal("modal-numpad");
-      // 캐비닛: 방금 해제 → shelf3 화면 + 카드키 획득 팝업
+      // 캐비닛: 방금 해제 → shelf3 화면 + 카드키 획득 (이후 핫스팟 없음)
       if (puzzleId === "cabinet_password" && this.currentDetailObj) {
         const image = this.pickImage(this.currentDetailObj, { justSolved: true });
         UI.openDetail({
           image,
           text: "...!! 열렸다! 카드키가 들어있다.",
           actions: [],
+          hotspots: [],
+        });
+      } else if (puzzleId === "computer_login" && this.currentDetailObj) {
+        // 컴퓨터: 로그인 성공 → computer2.png (solved 이미지) + 연구일지 안내
+        const image = this.pickImage(this.currentDetailObj, {});
+        UI.openDetail({
+          image,
+          text: this.currentDetailObj.narration_solved || "컴퓨터가 열렸다.",
+          actions: [],
+          hotspots: [],
         });
       } else {
         UI.closeDetail();

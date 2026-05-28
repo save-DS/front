@@ -125,18 +125,12 @@ const UI = {
   },
 
   // ---- 상세 뷰 ----
-  openDetail({ image, text, actions }) {
+  openDetail({ image, text, actions, hotspots }) {
     const overlay = document.getElementById("detail-overlay");
-    const img = document.getElementById("detail-img");
     const txt = document.getElementById("detail-text");
     const act = document.getElementById("detail-actions");
 
-    if (image) {
-      img.src = image;
-      img.classList.remove("hidden");
-    } else {
-      img.classList.add("hidden");
-    }
+    this.setDetailImage(image, hotspots);
     txt.textContent = text || "";
 
     act.innerHTML = "";
@@ -148,6 +142,29 @@ const UI = {
     });
 
     overlay.classList.add("active");
+  },
+
+  // 이미지/핫스팟만 갱신 (예: 캐비닛에서 건전지 꺼낸 후 shelf1→shelf2)
+  setDetailImage(image, hotspots) {
+    const img = document.getElementById("detail-img");
+    if (image) {
+      img.src = image;
+      img.classList.remove("hidden");
+    } else {
+      img.classList.add("hidden");
+    }
+    const container = document.getElementById("detail-img-hotspots");
+    container.innerHTML = "";
+    (hotspots || []).forEach((h) => {
+      const div = document.createElement("div");
+      div.className = "detail-hotspot";
+      div.style.left = h.left + "%";
+      div.style.top = h.top + "%";
+      div.style.width = h.width + "%";
+      div.style.height = h.height + "%";
+      div.onclick = h.onClick;
+      container.appendChild(div);
+    });
   },
 
   closeDetail() {
