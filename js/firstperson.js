@@ -359,7 +359,7 @@ const FP = {
     // 처음 열 때 안내 메시지 한 번
     const log = document.getElementById("ai-chat-log");
     if (!log.dataset.greeted) {
-      this.appendChat("ai", "막힌 부분을 물어보세요. 예: \"지금 뭘 해야 해?\", \"이 건전지 어디 써?\"");
+      this.appendChat("ai", "...신호가 잡힌다. 무엇이 궁금한가...");
       log.dataset.greeted = "1";
     }
     document.getElementById("ai-question").focus();
@@ -384,7 +384,7 @@ const FP = {
     input.value = "";
 
     this.appendChat("user", question);
-    const loading = this.appendChat("ai", "생각 중...");
+    const loading = this.appendChat("ai", "...신호 수신 중...");
 
     const res = await API.askHint(question);
     if (!res.success) {

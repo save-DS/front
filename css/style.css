@@ -324,9 +324,23 @@ body {
 }
 .modal-close:hover { background: #3a3a48; }
 
-/* ===================== AI 힌트 채팅 ===================== */
-.ai-hint-box { min-width: 460px; max-width: 560px; align-items: stretch; }
-.ai-hint-box h3 { text-align: center; }
+/* ===================== AI 힌트 채팅 (공포 톤) ===================== */
+.ai-hint-box {
+  min-width: 460px;
+  max-width: 560px;
+  align-items: stretch;
+  background: radial-gradient(ellipse at top, rgba(20, 18, 22, 1) 0%, rgba(8, 6, 10, 1) 100%);
+  border: 1px solid #2a2c32;
+}
+.ai-hint-title {
+  text-align: center;
+  color: #6e757c;                      /* 흐릿한 회청 (acquired 라벨과 동일 톤) */
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 5px;
+  text-shadow: 0 0 10px rgba(140, 160, 180, 0.18);
+  animation: ghostFlicker 6s ease-in-out infinite;
+}
 .ai-chat-log {
   height: 300px;
   overflow-y: auto;
@@ -334,52 +348,57 @@ body {
   flex-direction: column;
   gap: 8px;
   padding: 10px;
-  background: #0e0e14;
-  border: 1px solid #2a2a34;
-  border-radius: 8px;
+  background: #07080b;                 /* 더 깊은 검정 */
+  border: 1px solid #1c1d22;
+  border-radius: 4px;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.7);
 }
 .chat-bubble {
   max-width: 80%;
   padding: 9px 13px;
-  border-radius: 12px;
+  border-radius: 4px;                  /* 둥글둥글 X (낡은 단말 톤) */
   font-size: 0.92rem;
-  line-height: 1.5;
+  line-height: 1.55;
   white-space: pre-wrap;
   word-break: break-word;
 }
 .chat-bubble.user {
   align-self: flex-end;
-  background: #2a3550;
-  color: #e8eefb;
-  border-bottom-right-radius: 3px;
+  background: #1e2128;
+  color: #a8aeb6;
+  border-left: 2px solid #3a4048;
 }
 .chat-bubble.ai {
   align-self: flex-start;
-  background: #23232e;
-  color: #d8d8e0;
-  border-bottom-left-radius: 3px;
+  background: #11161a;
+  color: #8ea29a;                      /* 살짝 녹빛 (낡은 모니터) */
+  border-left: 2px solid #2c3a35;
+  text-shadow: 0 0 6px rgba(100, 140, 120, 0.18);
 }
-.chat-bubble.ai.error { color: #e08a8a; }
+.chat-bubble.ai.error { color: #b66b6b; border-left-color: #5a2a2a; }
 .ai-input-row { display: flex; gap: 8px; }
 .ai-input-row input {
   flex: 1;
   padding: 11px 14px;
-  background: #0e0e14;
-  border: 1px solid #3a3a48;
-  border-radius: 6px;
-  color: #e0e0e8;
+  background: #07080b;
+  border: 1px solid #2a2c32;
+  border-radius: 4px;
+  color: #a8aeb6;
   font-size: 0.95rem;
+  letter-spacing: 1px;
 }
-.ai-input-row input:focus { outline: none; border-color: #5a6a90; }
+.ai-input-row input:focus { outline: none; border-color: #4a5258; }
 .ai-input-row button {
   padding: 0 22px;
-  background: #2a3550;
-  color: #e0e8f5;
-  border: 1px solid #4a5a80;
-  border-radius: 6px;
+  background: #1c1f24;
+  color: #8a9098;
+  border: 1px solid #2a2c32;
+  border-radius: 4px;
   cursor: pointer;
+  letter-spacing: 4px;
+  font-size: 0.85rem;
 }
-.ai-input-row button:hover { background: #3a4a70; }
+.ai-input-row button:hover { background: #2a2d33; color: #aab0b8; }
 
 /* ===================== 미로 ===================== */
 .maze-stage {
@@ -397,24 +416,11 @@ body {
   border-radius: 6px;
 }
 #maze-canvas { display: block; image-rendering: pixelated; }
-.maze-controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+.maze-hint-text {
+  color: #6e757c;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
 }
-.dpad-mid { display: flex; gap: 48px; }
-.dpad {
-  width: 48px;
-  height: 40px;
-  font-size: 1.1rem;
-  background: #232330;
-  color: #e0e0e8;
-  border: 1px solid #3a3a48;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.dpad:hover { background: #323242; }
 .maze-info {
   display: flex;
   gap: 18px;
@@ -437,28 +443,34 @@ body {
   font-size: 1rem;
   color: #d8c060;
 }
-/* 미로 암기 카운트다운 - 크고 잘 보이게 */
+/* 미로 암기 카운트다운 - 공포 톤 (낡은 형광등 느낌) */
 .maze-countdown {
   position: absolute;
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 12px 36px;
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid #d8c060;
-  border-radius: 10px;
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: #ffe9a0;
-  text-shadow: 0 0 14px rgba(216, 192, 96, 0.7);
+  padding: 14px 40px;
+  background: radial-gradient(ellipse at center, rgba(15, 10, 14, 0.92) 0%, rgba(0, 0, 0, 0.96) 100%);
+  border: 1px solid #3a3f45;
+  border-radius: 6px;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #aab0b8;            /* 핏기 없는 흰 */
+  text-shadow: 0 0 12px rgba(60, 80, 100, 0.45),
+               0 0 28px rgba(20, 25, 30, 0.8);
   white-space: nowrap;
   z-index: 8;
   display: none;
 }
-.maze-countdown.show { display: block; animation: cdPulse 1s ease-in-out infinite; }
-@keyframes cdPulse {
-  50% { transform: translateX(-50%) scale(1.06); }
+.maze-countdown.show { display: block; animation: cdFlicker 2.4s ease-in-out infinite; }
+@keyframes cdFlicker {
+  0%, 100% { opacity: 1; }
+  46%      { opacity: 0.95; }
+  49%      { opacity: 0.45; }   /* 한 번 확 어두워졌다 */
+  52%      { opacity: 0.9; }
+  55%      { opacity: 0.7; }
+  60%      { opacity: 1; }
 }
 .maze-stage.trap-flash { animation: trapflash 0.4s; }
 @keyframes trapflash {
@@ -466,32 +478,56 @@ body {
   50% { background: #5a1010; }
 }
 
-/* ===================== 아이템 획득 팝업 ===================== */
-#item-acquired { background: rgba(0, 0, 0, 0.6); z-index: 40; }
+/* ===================== 아이템 획득 팝업 (공포 톤) ===================== */
+#item-acquired {
+  background: radial-gradient(ellipse at center, rgba(15, 10, 14, 0.85) 0%, rgba(0, 0, 0, 0.96) 100%);
+  z-index: 40;
+}
 .acquired-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  animation: acquirePop 0.4s ease-out;
+  gap: 18px;
+  animation: acquiredEerie 1.8s ease-out forwards;
 }
-@keyframes acquirePop {
-  0% { transform: scale(0.4); opacity: 0; }
-  60% { transform: scale(1.1); }
-  100% { transform: scale(1); opacity: 1; }
+/* 슬로우 페이드인 + 한 번 깜빡 (낡은 형광등 느낌) */
+@keyframes acquiredEerie {
+  0%   { opacity: 0;    filter: blur(6px); }
+  35%  { opacity: 0.7;  filter: blur(0);   }
+  42%  { opacity: 0.2; }                /* 깜빡 */
+  48%  { opacity: 0.85; }
+  100% { opacity: 1;    filter: blur(0); }
 }
 .acquired-label {
-  font-size: 1.1rem;
-  letter-spacing: 4px;
-  color: #d8c060;
+  font-size: 0.85rem;
+  letter-spacing: 6px;
+  color: #6e757c;                       /* 흐릿한 회청 */
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(150, 160, 170, 0.15);
 }
 .acquired-img {
-  width: 220px;
-  height: 220px;
+  width: 240px;
+  height: 240px;
   object-fit: contain;
-  filter: drop-shadow(0 0 24px rgba(216, 192, 96, 0.5));
+  /* 따뜻한 금색 글로우 → 차가운 회청색 헤일로 + 진한 그림자 */
+  filter: drop-shadow(0 0 14px rgba(140, 160, 180, 0.18))
+          drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85))
+          grayscale(0.15) contrast(1.05);
+  animation: ghostFlicker 5s ease-in-out infinite;
 }
-.acquired-name { font-size: 1.4rem; color: #fff; }
+@keyframes ghostFlicker {
+  0%, 100%  { opacity: 1; }
+  43%       { opacity: 0.92; }
+  46%       { opacity: 0.55; }          /* 미세하게 사라지는 듯 */
+  49%       { opacity: 0.95; }
+}
+.acquired-name {
+  font-size: 1.25rem;
+  color: #aab0b8;                       /* 핏기 없는 흰 */
+  letter-spacing: 3px;
+  text-shadow: 0 0 10px rgba(60, 80, 100, 0.4),
+               0 2px 4px rgba(0, 0, 0, 0.9);
+}
 
 /* ===================== 아이템 크게 보기 ===================== */
 .itemview-box {
@@ -536,17 +572,42 @@ body {
 }
 #intro-overlay.fade-out { opacity: 0; }
 #intro-text {
-  max-width: 70%;
-  font-size: 1.4rem;
-  line-height: 1.8;
+  max-width: 72%;
+  font-size: 1.5rem;
+  line-height: 1.85;
   text-align: center;
   color: #cfd8e8;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.85);
   opacity: 0;
-  animation: introTextIn 2s ease forwards;
+  animation: introTextIn 1.6s ease forwards;
+}
+/* 마지막 슬라이드 — 다급한 빨강 톤 */
+#intro-text.urgent {
+  color: #d63a3a;
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 0 18px rgba(180, 30, 30, 0.55),
+               0 2px 6px rgba(0, 0, 0, 0.9);
 }
 @keyframes introTextIn {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
+  0%   { opacity: 0; filter: blur(4px); }
+  100% { opacity: 1; filter: blur(0);   }
+}
+#intro-next-hint {
+  position: absolute;
+  bottom: 26px;
+  right: 30px;
+  color: #6e757c;
+  font-size: 0.8rem;
+  letter-spacing: 5px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: introHintPulse 2.2s ease-in-out infinite;
+}
+@keyframes introHintPulse {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
 }
 
 /* ===================== 토스트 ===================== */

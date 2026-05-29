@@ -21,30 +21,70 @@ const Main = {
     if (!res.success) { UI.toast(res.message, 4000); return; }
     Store.set(res.data.state);
 
-    // 1인칭 화면을 미리 깔아두고(배경 렌더), 그 위에 검은 인트로를 덮음
+    // 1인칭 화면을 미리 깔아두고(배경 렌더), 그 위에 인트로를 덮음
     await FP.enter();
-    const intro = (res.data.intro_event && res.data.intro_event.narration) ||
-      "정신을 차려보니 낯선 폐연구실에 갇혀있다...";
-    this.playIntro(intro);
+    this.playIntro();
   },
 
-  // 검은 화면에 멘트 → 서서히 배경이 드러남
-  playIntro(text) {
+  // 인트로 슬라이드들 (마지막은 urgent: true → 빨강)
+  _introSlides: [
+    { text: '"20XX년 11월 14일, 마지막 기록이다."' },
+    { text: '"놈들은 통제를 벗어났고, 전원은 곧 차단될 거다. 사람들은 이곳을 버렸다고 생각하겠지만..."' },
+    { text: '"아니, 여긴 버려진 게 아니라 격리될 것이다. 만약 누군가 이 메시지를 듣는다면, 제발 부탁하건대"' },
+    { text: '"당장 거기서 탈출해!!"', urgent: true },
+  ],
+
+  playIntro() {
+    this._introIndex = 0;
     const overlay = document.getElementById("intro-overlay");
-    const textEl = document.getElementById("intro-text");
-    textEl.textContent = text;
     overlay.classList.remove("fade-out");
     overlay.style.display = "flex";
-    // 텍스트 페이드인 애니메이션 재시작
+    this._renderIntroSlide();
+
+    // 클릭 / 스페이스·엔터·→ 로 다음 슬라이드
+    this._introClick = () => this._advanceIntro();
+    overlay.addEventListener("click", this._introClick);
+    this._introKey = (e) => {
+      if (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") {
+        e.preventDefault();
+        this._advanceIntro();
+      }
+    };
+    document.addEventListener("keydown", this._introKey);
+  },
+
+  _renderIntroSlide() {
+    const slide = this._introSlides[this._introIndex];
+    const textEl = document.getElementById("intro-text");
+    textEl.textContent = slide.text;
+    textEl.classList.toggle("urgent", !!slide.urgent);
+    // 페이드인 애니메이션 재시작
     textEl.style.animation = "none";
     void textEl.offsetWidth;
     textEl.style.animation = "";
 
-    // 3.5초 후 배경으로 페이드아웃
-    setTimeout(() => {
-      overlay.classList.add("fade-out");
-      setTimeout(() => { overlay.style.display = "none"; }, 2000);
-    }, 3500);
+    const hint = document.getElementById("intro-next-hint");
+    if (hint) {
+      const last = this._introIndex >= this._introSlides.length - 1;
+      hint.textContent = last ? "▶  들어가기  ▶" : "▶  화면을 클릭해 계속  ▶";
+    }
+  },
+
+  _advanceIntro() {
+    this._introIndex += 1;
+    if (this._introIndex < this._introSlides.length) {
+      this._renderIntroSlide();
+    } else {
+      this._endIntro();
+    }
+  },
+
+  _endIntro() {
+    const overlay = document.getElementById("intro-overlay");
+    overlay.removeEventListener("click", this._introClick);
+    document.removeEventListener("keydown", this._introKey);
+    overlay.classList.add("fade-out");
+    setTimeout(() => { overlay.style.display = "none"; }, 2000);
   },
 
   // ---- 1인칭 탈출 → 미로 진입 ----

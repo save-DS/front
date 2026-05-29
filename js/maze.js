@@ -48,7 +48,7 @@ const Maze = {
     this.setupCanvas();
     this.draw();
     this.updateInfo();
-    this.startMemorize();           // 3초 암기 카운트다운 → 벽 숨김
+    this.startMemorize();           // 5초 암기 카운트다운 → 벽 숨김
   },
 
   // 힌트 사용 가능 상태로 초기화 (미로당 1회)
@@ -65,7 +65,7 @@ const Maze = {
     clearInterval(this._memTimer);
     const cd = document.getElementById("maze-countdown");
     document.getElementById("maze-msg").textContent = "";
-    let count = 3;
+    let count = 5;
     cd.textContent = `미로를 외우세요!  ${count}`;
     cd.classList.add("show");
     this._memTimer = setInterval(() => {
@@ -102,7 +102,8 @@ const Maze = {
     for (let r = 0; r < this.grid.length; r++) {
       for (let c = 0; c < this.grid[0].length; c++) {
         const isWall = this.grid[r][c] === 1;
-        ctx.fillStyle = (isWall && !this.wallsHidden) ? "#2a2a32" : "#e6e6ea";
+        // 숨겨지면 길도 #2a2a32 (전원 꺼진 듯 깜깜) / 평소엔 벽만 어둡고 길은 밝음
+        ctx.fillStyle = (this.wallsHidden || isWall) ? "#2a2a32" : "#d9d9d9";
         ctx.fillRect(c * cs, r * cs, cs - 1, cs - 1);
       }
     }

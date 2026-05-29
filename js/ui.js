@@ -120,8 +120,8 @@ const UI = {
     overlay.classList.add("active");
     setTimeout(() => {
       overlay.classList.remove("active");
-      setTimeout(() => this._drainAcquired(), 350);
-    }, 1400);
+      setTimeout(() => this._drainAcquired(), 450);
+    }, 1900);
   },
 
   // ---- 상세 뷰 ----

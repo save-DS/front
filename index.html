@@ -47,14 +47,8 @@
         <div class="maze-wrap">
           <canvas id="maze-canvas"></canvas>
         </div>
-        <div class="maze-controls">
-          <button class="dpad up" data-dir="up">▲</button>
-          <div class="dpad-mid">
-            <button class="dpad left" data-dir="left">◀</button>
-            <button class="dpad right" data-dir="right">▶</button>
-          </div>
-          <button class="dpad down" data-dir="down">▼</button>
-        </div>
+        <!-- 방향키 버튼 제거 — 키보드 방향키로만 이동 -->
+        <div class="maze-hint-text">방향키(↑↓←→)로 이동</div>
         <div class="maze-info">
           <span id="maze-steps">이동: 0</span>
           <span id="maze-traps">함정: 0</span>
@@ -117,7 +111,7 @@
     <!-- ============ AI 힌트 채팅 패널 (1인칭 HINT) ============ -->
     <div id="ai-hint-panel" class="overlay">
       <div class="modal-box ai-hint-box">
-        <h3>🤖 AI 힌트</h3>
+        <h3 class="ai-hint-title">.  .  .  잔존 신호  .  .  .</h3>
         <div id="ai-chat-log" class="ai-chat-log"></div>
         <div class="ai-input-row">
           <input id="ai-question" type="text" placeholder="예: 지금 뭘 해야 해?" autocomplete="off" />
@@ -130,7 +124,7 @@
     <!-- ============ 아이템 획득 팝업 (자동 닫힘) ============ -->
     <div id="item-acquired" class="overlay">
       <div class="acquired-box">
-        <div class="acquired-label">획득!</div>
+        <div class="acquired-label">.  .  .  발견  .  .  .</div>
         <img id="acquired-img" class="acquired-img" src="" alt="" />
         <div id="acquired-name" class="acquired-name"></div>
       </div>
@@ -151,6 +145,7 @@
     <!-- ============ 인트로 연출 (검은 화면 → 페이드인) ============ -->
     <div id="intro-overlay">
       <p id="intro-text"></p>
+      <div id="intro-next-hint">▶  화면을 클릭해 계속  ▶</div>
     </div>
 
     <!-- ============ 토스트 알림 ============ -->
